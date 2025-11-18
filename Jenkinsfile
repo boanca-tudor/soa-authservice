@@ -4,7 +4,7 @@ pipeline {
     environment {
         AWS_REGION       = "eu-central-1"
         ECR_ACCOUNT_ID   = "206578774527"
-        ECR_REPO_NAME    = "auth-service"
+        ECR_REPO_NAME    = "soa/auth-service"
         IMAGE_TAG        = "${env.GIT_COMMIT}" // use commit SHA
     }
 
