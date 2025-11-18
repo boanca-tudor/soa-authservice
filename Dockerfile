@@ -1,4 +1,4 @@
-FROM openjdk:21
+FROM openjdk:21-ea-13-jdk-slim-bullseye
 WORKDIR /app
 COPY build/libs/*.jar app.jar
 EXPOSE 8080
