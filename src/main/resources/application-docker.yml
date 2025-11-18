@@ -1,0 +1,19 @@
+spring:
+  config:
+    activate:
+      on-profile: docker
+
+  datasource:
+    url: jdbc:postgresql://authDb:5432/soa
+    username: tudor
+    password: soa
+
+  kafka:
+    bootstrap-servers: kafka:9092
+
+#logging:
+#  level:
+#    root: DEBUG
+
+server:
+  port: 8080

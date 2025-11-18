@@ -1,0 +1,48 @@
+spring:
+  application:
+    name: authService
+
+  datasource:
+    url: jdbc:postgresql://soa-authDb-1:5432/soa
+    username: tudor
+    password: soa
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  kafka:
+    bootstrap-servers: soa-kafka-1:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    consumer:
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+
+jwt:
+  token:
+    validity: 18000
+    prefix: Bearer
+  signing:
+    key: jrwBtd+VE5GbcHcosHObJTNYNeRoXWcXaBNAXuccfkk=
+  authorities:
+    key: Authorities
+  header:
+    string: Authorization
+
+kafka:
+  topic-name: replication
+
+server:
+  port: 8080
+
+# Optional Logging Configuration
+# logging:
+#   level:
+#     org.springframework: DEBUG

@@ -1,0 +1,19 @@
+spring:
+  config:
+    activate:
+      on-profile: local
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/soa
+    username: tudor
+    password: soa
+
+  kafka:
+    bootstrap-servers: localhost:29092
+
+#logging:
+#  level:
+#    root: DEBUG
+
+server:
+  port: 9000
