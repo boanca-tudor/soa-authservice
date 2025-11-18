@@ -1,2 +1,2 @@
 rootProject.name = "authService"
-includeBuild("../userModule")
+includeBuild("./soa-user-module")

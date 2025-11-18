@@ -14,34 +14,40 @@ pipeline {
                 checkout scm
             }
         }
+        stage('Build') {
+            steps {
+                sh "./gradlew clean bootJar"
+            }
+        }
         stage('Build docker image') {
             steps {
                 sh """
-                docker build -t ${ECR_REPO_NAME}:${IMAGE_TAG}
+                docker build -t ${ECR_REPO_NAME}:${IMAGE_TAG} .
+                docker tag ${ECR_REPO_NAME}:${IMAGE_TAG} ${ECR_REPO_NAME}:latest
                 """
             }
         }
 
-        stage('Login to AWS ECR') {
+        stage('Handle ECR') {
             steps {
-                script {
-                    withAWS(credentials: 'AWSKey', region: ${AWS_REGION}) {
+                withCredentials([[
+                    $class: 'AmazonWebServicesCredentialsBinding',
+                    credentialsId: 'AWSKey'
+                ]]) {
+                    script {
+                        def registry = "${ECR_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
+                        def repo     = "${registry}/${ECR_REPO_NAME}"
                         sh """
-                            aws ecr get-login-password \
-                                | docker login --username AWS --password-stdin ${ECR_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
-                            """
-                    }
-                }
-            }
-        }
+                        aws ecr get-login-password --region ${AWS_REGION} \
+                            | docker login --username AWS --password-stdin ${registry}
 
-        stage('Tag & Push to ECR') {
-            steps {
-                script {
-                    sh """
-                    docker tag ${ECR_REPO_NAME}:${IMAGE_TAG} ${ECR_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO_NAME}:${IMAGE_TAG}
-                    docker push ${ECR_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO_NAME}:${IMAGE_TAG}
-                    """
+                        docker tag ${ECR_REPO_NAME}:${IMAGE_TAG} ${repo}:${IMAGE_TAG}
+                        docker tag ${ECR_REPO_NAME}:latest ${repo}:latest
+
+                        docker push ${repo}:${image_tag}
+                        docker push ${repo}:latest
+                        """
+                    }
                 }
             }
         }
