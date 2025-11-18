@@ -12,7 +12,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 checkout scm
-                sh """"
+                sh """
                 git submodule init
                 git submodule update --recursive
                 """
